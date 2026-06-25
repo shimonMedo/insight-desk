@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Ticket {
+  id            String   @id @default(cuid())
+  userQuestion  String
+  aiAnswer      String
+  wasHelpful    Boolean?
+  failureReason String?
+  suggestedFix  String?
+  fixType       String?
+  triage        String   @default("needs_human_support")
+  topicKey      String?
+  repeatCount   Int      @default(1)
+  routeToInsights Boolean @default(false)
+  surfaceReason String?
+  status        String   @default("new")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Medication {
+  id               String   @id @default(cuid())
+  name             String
+  sku              String   @unique
+  category         String
+  quantity         Int
+  reorderThreshold Int
+  reorderStatus    String   @default("none")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}

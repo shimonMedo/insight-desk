@@ -1,0 +1,21 @@
+{
+  "name": "insight-desk",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "build": "npm run build:server && npm run build:client",
+    "bug:fix:ps": "powershell -ExecutionPolicy Bypass -File scripts/Mark-BugFixed.ps1",
+    "bug:refresh:ps": "powershell -ExecutionPolicy Bypass -File scripts/Refresh-BugReports.ps1",
+    "dev:client:ps": "powershell -ExecutionPolicy Bypass -File scripts/Start-InsightDeskClient.ps1",
+    "dev:server:ps": "powershell -ExecutionPolicy Bypass -File scripts/Start-InsightDeskServer.ps1",
+    "dev:client": "npm --workspace client run dev",
+    "dev:server": "npm --workspace server run dev",
+    "build:client": "npm --workspace client run build",
+    "build:server": "npm --workspace server run build",
+    "start:client": "npm --workspace client run start",
+    "start:server": "npm --workspace server run start"
+  }
+}
