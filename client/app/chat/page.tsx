@@ -38,6 +38,10 @@ export default function ChatPage() {
   const [isSubmittingTicket, setIsSubmittingTicket] = useState(false);
   const [error, setError] = useState("");
 
+  function clearQuestionInput() {
+    setQuestion("");
+  }
+
   async function submitQuestion(nextQuestion?: string) {
     const value = (nextQuestion ?? question).trim();
     const apiUrl = getApiBaseUrl();
@@ -119,6 +123,7 @@ export default function ChatPage() {
 
       const data = (await response.json()) as TicketCreationResponse;
       setFeedback("not-helpful");
+      clearQuestionInput();
       setTicketMessage(
         data.ticket.routeToInsights
           ? `Ticket ${data.ticket.id.slice(0, 8)} was added to Insights for product review.`
@@ -242,7 +247,10 @@ export default function ChatPage() {
                 <div className="mt-5 flex flex-wrap gap-3">
                   <button
                     type="button"
-                    onClick={() => setFeedback("helpful")}
+                    onClick={() => {
+                      setFeedback("helpful");
+                      clearQuestionInput();
+                    }}
                     className={`rounded-full px-4 py-2 text-sm transition ${
                       feedback === "helpful"
                         ? "bg-moss text-white"
