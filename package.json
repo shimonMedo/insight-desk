@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "build": "npm run build:server && npm run build:client",
+    "build:railway": "npm --workspace server run prisma:generate:postgres && npm run build",
     "bug:fix:ps": "powershell -ExecutionPolicy Bypass -File scripts/Mark-BugFixed.ps1",
     "bug:refresh:ps": "powershell -ExecutionPolicy Bypass -File scripts/Refresh-BugReports.ps1",
     "dev:client:ps": "powershell -ExecutionPolicy Bypass -File scripts/Start-InsightDeskClient.ps1",
@@ -15,6 +16,8 @@
     "dev:server": "npm --workspace server run dev",
     "build:client": "npm --workspace client run build",
     "build:server": "npm --workspace server run build",
+    "railway:migrate": "npm --workspace server run prisma:push:postgres",
+    "start:railway": "npm --workspace server run start",
     "start:client": "npm --workspace client run start",
     "start:server": "npm --workspace server run start"
   }

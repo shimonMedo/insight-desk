@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { TopNav } from "../../components/TopNav";
+import { getApiBaseUrl } from "../../lib/api";
 
 type ChatResponse = {
   answer: string;
@@ -25,9 +26,6 @@ const suggestedQuestions = [
   "What should I do if inventory still looks wrong after an update?",
 ];
 
-const apiUrl =
-  process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3002";
-
 export default function ChatPage() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -42,6 +40,7 @@ export default function ChatPage() {
 
   async function submitQuestion(nextQuestion?: string) {
     const value = (nextQuestion ?? question).trim();
+    const apiUrl = getApiBaseUrl();
 
     if (!value) {
       setError("Please enter a support question first.");
@@ -94,6 +93,8 @@ export default function ChatPage() {
     if (!question || !answer) {
       return;
     }
+
+    const apiUrl = getApiBaseUrl();
 
     setIsSubmittingTicket(true);
     setError("");

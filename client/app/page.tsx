@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TopNav } from "../components/TopNav";
+import { getApiBaseUrl } from "../lib/api";
 
 type Medication = {
   id: string;
@@ -23,9 +24,6 @@ type TicketSummaryResponse = {
   open: number;
   fixed: number;
 };
-
-const apiUrl =
-  process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3002";
 
 function statusClassName(status: string) {
   if (status === "Needs Reorder") {
@@ -52,6 +50,8 @@ export default function HomePage() {
 
   useEffect(() => {
     async function loadMedications() {
+      const apiUrl = getApiBaseUrl();
+
       try {
         const [medicationsResponse, ticketsResponse] = await Promise.all([
           fetch(`${apiUrl}/api/medications`, {
@@ -90,6 +90,8 @@ export default function HomePage() {
     medicationId: string,
     action: "ship" | "restock" | "reorder",
   ) {
+    const apiUrl = getApiBaseUrl();
+
     setActiveAction(`${medicationId}:${action}`);
     setError("");
 

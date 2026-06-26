@@ -61,6 +61,8 @@ Example:
 NEXT_PUBLIC_API_URL="http://localhost:3002"
 ```
 
+If `NEXT_PUBLIC_API_URL` is omitted in production, the frontend can call the same origin when the UI and API are deployed as one Railway service.
+
 OpenAI is optional for local development. If `OPENAI_API_KEY` is missing, the app still works with local knowledge fallback.
 
 If you want to verify the OpenAI key:
@@ -137,10 +139,9 @@ Core loop:
 
 ## Deployment Notes
 
-Railway is expected to host:
+Railway can host this project as:
 
-- one `client` service
-- one `server` service
+- one combined `app` service for frontend + API
 - one PostgreSQL service
 
 Deployment details are in `RAILWAY_DEPLOYMENT.md`.

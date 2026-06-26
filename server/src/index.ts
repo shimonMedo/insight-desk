@@ -1,6 +1,7 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import fs from "fs";
 import path from "path";
 import { readEnv } from "./config/env";
 import { getChatAnswer } from "./lib/chat";
@@ -289,6 +290,19 @@ app.patch("/api/tickets/:id", async (request, response) => {
 
   response.json({ ticket });
 });
+
+const clientOutDir = path.resolve(process.cwd(), "..", "client", "out");
+
+if (fs.existsSync(clientOutDir)) {
+  app.use(express.static(clientOutDir));
+
+  app.get(["/", "/chat", "/insights"], (request, response) => {
+    const requestedPath =
+      request.path === "/" ? "index.html" : `${request.path.slice(1)}.html`;
+
+    response.sendFile(path.join(clientOutDir, requestedPath));
+  });
+}
 
 app.listen(env.port, () => {
   console.log(`InsightDesk server running on http://localhost:${env.port}`);

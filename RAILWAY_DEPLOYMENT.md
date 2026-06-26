@@ -2,12 +2,10 @@
 
 ## Deployment Model
 
-Deploy this repository as two Railway services:
+Deploy this repository as one Railway application service plus one Railway PostgreSQL service:
 
-- `client` service for the Next.js frontend
-- `server` service for the Express API
-
-Also add one Railway PostgreSQL service for the server database.
+- `app` service for the Express API and exported frontend together
+- `postgres` service for the production database
 
 ## Before You Deploy
 
@@ -15,16 +13,16 @@ Complete these checks first:
 
 1. Confirm the project builds locally with `npm run build`
 2. Confirm the server works with the PostgreSQL-ready Prisma schema
-3. Make sure `NEXT_PUBLIC_API_URL` points to the Railway server URL
-4. Make sure `CLIENT_URL` points to the Railway client URL
+3. Decide whether you want to set `NEXT_PUBLIC_API_URL`
+4. Make sure `CLIENT_URL` points to the Railway app URL
 5. Add `OPENAI_API_KEY` only if you want OpenAI answers in production
 
-## Server Service
+## App Service
 
 Set the Railway root directory to:
 
 ```text
-server
+.
 ```
 
 Recommended commands:
@@ -32,15 +30,20 @@ Recommended commands:
 - Build command:
 
 ```text
-npm install --workspaces=false
-npm run prisma:generate:postgres
-npm run build
+npm install
+npm run build:railway
 ```
 
 - Start command:
 
 ```text
-npm run start
+npm run start:railway
+```
+
+- Pre-deploy command:
+
+```text
+npm run railway:migrate
 ```
 
 Required environment variables:
@@ -53,39 +56,10 @@ Required environment variables:
 Notes:
 
 - `OPENAI_API_KEY` is optional if you want the server to rely only on local knowledge fallback
-- `CLIENT_URL` must exactly match the deployed frontend origin for CORS
-
-## Client Service
-
-Set the Railway root directory to:
-
-```text
-client
-```
-
-Recommended commands:
-
-- Build command:
-
-```text
-npm install --workspaces=false
-npm run build
-```
-
-- Start command:
-
-```text
-npm run start
-```
-
-Required environment variables:
-
-- `NEXT_PUBLIC_API_URL`
-- `PORT`
-
-Note:
-
-- `NEXT_PUBLIC_API_URL` must point to the deployed Express server, not the client service
+- `CLIENT_URL` should be the same Railway domain served by this app
+- `DATABASE_URL` should be added as a Railway reference variable from the PostgreSQL service
+- `NEXT_PUBLIC_API_URL` is optional in a single-service deployment because the frontend can call the same origin
+- if you set `NEXT_PUBLIC_API_URL`, point it to the same app domain
 
 ## PostgreSQL Migration Strategy
 
@@ -110,14 +84,22 @@ npm run prisma:push:postgres
 
 For this project, `db push` is the fastest first-deploy path on a fresh Railway PostgreSQL database.
 
-## Client / Server Linking
+Important:
+
+- do not run `npm run prisma:seed` automatically on each deploy
+- the current seed script clears existing tickets and medications before re-inserting demo data
+- use the seed script only once on a fresh demo database, or when you intentionally want to reset production demo data
+
+## Frontend / API Linking
 
 Use these values:
 
-- On the client service:
-  `NEXT_PUBLIC_API_URL=https://your-server-service.up.railway.app`
-- On the server service:
-  `CLIENT_URL=https://your-client-service.up.railway.app`
+- On the app service:
+  `CLIENT_URL=https://your-app-service.up.railway.app`
+- Optional on the same app service:
+  `NEXT_PUBLIC_API_URL=https://your-app-service.up.railway.app`
+
+In this deployment model the frontend and API share the same Railway domain.
 
 ## Health Check
 
@@ -128,6 +110,10 @@ The server exposes:
 ```
 
 Use it to confirm the deployed backend is healthy.
+
+Recommended Railway healthcheck:
+
+- app service: `/api/health`
 
 ## Important Note
 

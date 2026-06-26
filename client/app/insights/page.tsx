@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TopNav } from "../../components/TopNav";
+import { getApiBaseUrl } from "../../lib/api";
 
 type Ticket = {
   id: string;
@@ -23,8 +24,6 @@ type TicketResponse = {
 };
 
 const statuses = ["new", "reviewed", "fixed"];
-const apiUrl =
-  process.env.NEXT_PUBLIC_API_URL?.trim() || "http://localhost:3002";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en", {
@@ -41,6 +40,8 @@ export default function InsightsPage() {
 
   useEffect(() => {
     async function loadTickets() {
+      const apiUrl = getApiBaseUrl();
+
       try {
         const response = await fetch(`${apiUrl}/api/tickets`, {
           cache: "no-store",
@@ -67,6 +68,8 @@ export default function InsightsPage() {
   }, []);
 
   async function updateStatus(ticketId: string, status: string) {
+    const apiUrl = getApiBaseUrl();
+
     setUpdatingId(ticketId);
     setError("");
 
