@@ -191,6 +191,9 @@ export default function HomePage() {
                   AI-powered help desk, and a feedback loop that turns repeated
                   support friction into product fixes.
                 </p>
+                <p className="text-sm font-medium text-rust">
+                  Live deploy check: homepage updated on June 26, 2026.
+                </p>
               </div>
 
               <nav className="flex flex-wrap gap-3">
